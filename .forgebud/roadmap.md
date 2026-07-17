@@ -294,4 +294,4 @@ The ultimate goal of ForgeBud is simple:
 
 A developer should never again have to explain their software project to an AI.
 
-The project should explain itself.
+The project should explain itself.S

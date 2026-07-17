@@ -11,13 +11,10 @@ from PySide6.QtWidgets import (
 
 from version import APP_NAME, APP_VERSION
 
+from controllers.project_controller import ProjectController
 from models.project_info import ProjectInfo
-
 from widgets.project_panel import ProjectPanel
 from widgets.status_bar import StatusBar
-
-from services.git_service import GitService
-from services.project_service import ProjectService
 
 
 class MainWindow(QMainWindow):
@@ -25,158 +22,56 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.projectPath: Path | None = None
-
         self.setWindowTitle(f"{APP_NAME} v{APP_VERSION}")
         self.resize(1200, 800)
 
-        # -------------------------------------------------
-        # Central Widget
-        # -------------------------------------------------
-
         central = QWidget()
-
         self.setCentralWidget(central)
 
         mainLayout = QVBoxLayout(central)
-
-        # -------------------------------------------------
-        # Main Content
-        # -------------------------------------------------
-
         contentLayout = QHBoxLayout()
 
         self.projectPanel = ProjectPanel()
-
         contentLayout.addWidget(self.projectPanel)
-
         mainLayout.addLayout(contentLayout)
 
-        # -------------------------------------------------
-        # Status Bar
-        # -------------------------------------------------
-
         self.statusBarWidget = StatusBar()
-
         mainLayout.addWidget(self.statusBarWidget)
 
-        # -------------------------------------------------
-        # Signals
-        # -------------------------------------------------
+        self.projectController = ProjectController(self)
 
         self.projectPanel.openButton.clicked.connect(
-            self.open_project
+            self.projectController.open_project
         )
-
         self.projectPanel.initializeButton.clicked.connect(
-            self.initialize_project
+            self.projectController.initialize_project
         )
 
-    # =====================================================
-    # Project
-    # =====================================================
+    # ---------------- MainWindow façade ----------------
 
-    def open_project(self):
+    def show_status(self, message: str) -> None:
+        self.statusBarWidget.show_message(message)
 
-        folder = QFileDialog.getExistingDirectory(
+    def select_project_folder(self) -> str:
+        return QFileDialog.getExistingDirectory(
             self,
             "Open Project",
         )
 
-        if not folder:
-            return
+    def show_information(self, title: str, message: str) -> None:
+        QMessageBox.information(self, title, message)
 
-        self.load_project(folder)
+    def set_project(self, info: ProjectInfo) -> None:
+        self.projectPanel.set_project(info)
 
-    def load_project(self, folder):
+    def clear_project(self) -> None:
+        self.projectPanel.clear()
 
-        self.projectPath = Path(folder)
+    def set_repository_status(self, text: str) -> None:
+        self.projectPanel.set_repository_status(text)
 
-        self.statusBarWidget.setText(
-            f"Opened project: {self.projectPath.name}"
-        )
+    def enable_initialize(self) -> None:
+        self.projectPanel.enable_initialize()
 
-        #
-        # Git
-        #
-
-        if GitService.is_repository(folder):
-
-            branch = GitService.current_branch(folder)
-
-            self.projectPanel.set_repository_status(
-                f"Git Repository ({branch})"
-            )
-
-        else:
-
-            self.projectPanel.set_repository_status(
-                "Not a Git repository"
-            )
-
-        #
-        # ForgeBud
-        #
-
-        if ProjectService.is_initialized(folder):
-
-            info = ProjectService.load(folder)
-
-            self.projectPanel.set_project(info)
-
-            self.projectPanel.disable_initialize()
-
-            self.statusBarWidget.setText(
-                "ForgeBud project loaded."
-            )
-
-        else:
-
-            self.projectPanel.clear()
-
-            self.projectPanel.set_repository_status(
-                "Project not initialized"
-            )
-
-            self.projectPanel.enable_initialize()
-
-            self.statusBarWidget.setText(
-                "Project ready for initialization."
-            )
-
-    def initialize_project(self):
-
-        if self.projectPath is None:
-
-            QMessageBox.information(
-                self,
-                "No Project",
-                "Please open a project first.",
-            )
-
-            return
-
-        info = ProjectInfo()
-
-        info.name = self.projectPath.name
-        info.version = "0.1.0"
-        info.description = ""
-        info.language = "Python"
-        info.framework = "Unknown"
-
-        ProjectService.initialize(
-            self.projectPath,
-            info,
-        )
-
-        self.load_project(self.projectPath)
-
-        QMessageBox.information(
-            self,
-            "ForgeBud",
-            "Project initialized successfully.",
-        )
-
-        self.statusBarWidget.setText(
-            "Project initialized successfully."
-        )
+    def disable_initialize(self) -> None:
+        self.projectPanel.disable_initialize()
