@@ -3,9 +3,11 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Protocol
 
+from models.current_task import CurrentTask
 from models.project_dashboard import ProjectDashboard
 from models.project_info import ProjectInfo
 from services.context_service import ContextService
+from services.current_task_service import CurrentTaskService
 from services.git_service import GitService
 from services.project_service import ProjectService
 from services.release_manifest_service import (
@@ -57,6 +59,29 @@ class ProjectWindow(Protocol):
         Display project dashboard state.
         """
 
+    def set_current_task(
+        self,
+        current_task: CurrentTask,
+    ) -> None:
+        """
+        Display current-task state.
+        """
+
+    def clear_current_task(self) -> None:
+        """
+        Clear displayed current-task state.
+        """
+
+    def enable_current_task_editing(self) -> None:
+        """
+        Enable current-task editing and saving.
+        """
+
+    def disable_current_task_editing(self) -> None:
+        """
+        Disable current-task editing and saving.
+        """
+
     def enable_initialize(self) -> None:
         """
         Enable project initialization.
@@ -79,7 +104,8 @@ class ProjectWindow(Protocol):
 class ProjectController:
     """
     Coordinates project selection, loading, initialization,
-    dashboard state, and recent-project presentation.
+    dashboard state, current-task state, and recent-project
+    presentation.
     """
 
     def __init__(self, window: ProjectWindow) -> None:
@@ -109,7 +135,8 @@ class ProjectController:
 
     def load_project(self, folder: str | Path) -> None:
         """
-        Load project, repository, and dashboard information.
+        Load project, repository, dashboard, and current-task
+        information.
         """
         project_path = Path(folder)
 
@@ -131,6 +158,7 @@ class ProjectController:
             self._show_uninitialized_project()
 
         self.refresh_project_dashboard()
+        self.refresh_current_task()
 
     def initialize_project(self) -> None:
         """
@@ -158,6 +186,49 @@ class ProjectController:
         )
         self._window.show_status(
             "Project initialized successfully."
+        )
+
+    def save_current_task(self, markdown: str) -> None:
+        """
+        Save current-task Markdown for the opened project.
+        """
+        if self._project_path is None:
+            self._window.show_information(
+                "No Project",
+                "Please open a project first.",
+            )
+            return
+
+        if not ProjectService.is_initialized(
+            self._project_path
+        ):
+            self._window.show_information(
+                "Project Not Initialized",
+                "Initialize the project before saving "
+                "its current task.",
+            )
+            return
+
+        current_task = CurrentTask(markdown=markdown)
+
+        try:
+            CurrentTaskService.save(
+                self._project_path,
+                current_task,
+            )
+        except ValueError as error:
+            self._window.show_information(
+                "Current Task",
+                str(error),
+            )
+            self._window.show_status(
+                "Current task could not be saved."
+            )
+            return
+
+        self.refresh_current_task()
+        self._window.show_status(
+            "Current task saved successfully."
         )
 
     def refresh_recent_projects(self) -> None:
@@ -202,6 +273,29 @@ class ProjectController:
 
         self._window.set_project_dashboard(dashboard)
 
+    def refresh_current_task(self) -> None:
+        """
+        Load and display current-task state for the opened project.
+        """
+        if self._project_path is None:
+            self._window.clear_current_task()
+            self._window.disable_current_task_editing()
+            return
+
+        if not ProjectService.is_initialized(
+            self._project_path
+        ):
+            self._window.clear_current_task()
+            self._window.disable_current_task_editing()
+            return
+
+        current_task = CurrentTaskService.load(
+            self._project_path
+        )
+
+        self._window.set_current_task(current_task)
+        self._window.enable_current_task_editing()
+
     def _update_repository_status(self) -> None:
         """
         Load and display the current Git repository status.
@@ -212,7 +306,9 @@ class ProjectController:
             )
             return
 
-        branch = GitService.current_branch(self._project_path)
+        branch = GitService.current_branch(
+            self._project_path
+        )
 
         self._window.set_repository_status(
             f"Git Repository ({branch})"
@@ -237,6 +333,8 @@ class ProjectController:
             "Project not initialized"
         )
         self._window.enable_initialize()
+        self._window.clear_current_task()
+        self._window.disable_current_task_editing()
         self._window.show_status(
             "Project ready for initialization."
         )

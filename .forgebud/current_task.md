@@ -1,49 +1,95 @@
 # Current Task
 
-## Completed Release
+## Active Release
 
-Version: v0.4.0
+Version: **v0.5.0**
 
-Milestone: Project Dashboard
+Milestone: **Current Task Manager**
 
-Status: Complete
+Status: **Complete — Ready for Commit**
 
-## Objective
+---
 
-Implement an extensible Project Dashboard that displays current
-project metadata, repository status, and release metadata while
-preserving ForgeBud's layered architecture.
+# Summary
 
-## Completed Requirements
+The Current Task Manager has been successfully implemented.
 
-- Added a dashboard state model composed from existing project,
-  repository, and release state.
-- Added a presentation-only Project Dashboard widget.
-- Integrated dashboard state loading into ProjectController.
-- Used ContextService, ProjectService, and ReleaseManifestService
-  through the controller.
-- Added the dashboard to MainWindow without adding business logic.
-- Preserved existing project opening, initialization, and recent
-  project workflows.
+The feature is now fully integrated into ForgeBud using the existing architecture:
 
-## Files Added
+* Controllers coordinate workflows.
+* Services perform persistence.
+* Widgets display and edit state.
+* Models contain state only.
 
-- `models/project_dashboard.py`
-- `widgets/project_dashboard.py`
+The application compiles successfully and launches without runtime errors.
 
-## Files Changed
+---
 
-- `controllers/project_controller.py`
-- `main_window.py`
+# Completed Work
 
-## Validation
+* Added `CurrentTask` model.
+* Added `CurrentTaskService`.
+* Added `CurrentTaskManagerWidget`.
+* Integrated current-task loading.
+* Integrated current-task saving.
+* Connected controller to the new service.
+* Integrated widget into the main window.
+* Disabled editing for uninitialized projects.
+* Enabled editing for initialized projects.
+* Preserved all existing functionality.
 
-The full project compiled successfully with:
+---
 
-```text
-python -m compileall main.py main_window.py controllers models services widgets
-```
+# Validation
 
-## Next Task
+Completed successfully:
 
-Prepare the release specification for Current Task Manager support.
+* Project compiles.
+* Application launches.
+* Existing dashboard remains functional.
+* Existing project management remains functional.
+* Current task loads from project memory.
+* Current task saves back to project memory.
+
+---
+
+# Release Status
+
+Implementation: Complete
+
+Compilation: Passed
+
+Runtime Launch: Passed
+
+Documentation: In Progress
+
+Repository Status: Ready for final documentation update and commit.
+
+---
+
+# Next Release
+
+Version: **v0.6.0**
+
+Milestone:
+
+**Decisions Manager**
+
+Planned implementation:
+
+* Decisions model
+* Decisions persistence service
+* Decisions widget
+* Controller integration
+* Main window integration
+* Persistent management of `.forgebud/decisions.md`
+
+---
+
+# Immediate Next Step
+
+Update:
+
+* `.forgebud/release_manifest.md`
+
+After that, commit and push the completed v0.5.0 release.

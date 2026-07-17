@@ -1,137 +1,101 @@
 # ForgeBud Project State
 
-Version: 0.4.0
+## Current Version
 
-Last Updated: 2026-07-17
+**v0.5.0**
 
----
-
-# Current Milestone
-
-## Milestone 2 — Project Management
-
-Status: In Progress
-
----
-
-# Current Objective
-
-Complete the project-management capabilities that allow ForgeBud to
-understand a project, preserve its current state, and coordinate
-project workflows through controllers.
+Status: **Current Task Manager Complete (Awaiting Commit)**
 
 ---
 
 # Completed Milestones
 
-## Milestone 1 — Foundation
+## v0.1.0
 
-Status: Complete
+* Project initialization
+* ForgeBud project creation
+* Project metadata management
 
-Completed Components
+## v0.2.0
 
-- Application framework
-- Main window
-- Project panel
-- Status bar
-- SettingsService
-- FileService
-- GitService
-- ContextService
-- ProjectService
-- ProjectInfo model
-- Project initialization
-- Git detection
-- Project metadata
-- Open Project workflow
+* Repository detection
+* Git integration
+* Recent project support
 
----
+## v0.3.0
 
-# Completed Milestone 2 Work
+* Project dashboard
+* Context service
+* Repository status display
 
-- ProjectController introduced.
-- Project lifecycle logic moved from MainWindow to ProjectController.
-- Recent Projects support implemented.
-- Release Manifest backend implemented.
-- Project Dashboard implemented.
-- ProjectDashboard model added.
-- ProjectDashboardWidget added.
-- ProjectController coordinates project, repository, and release data
-  for dashboard presentation.
+## v0.4.0
+
+* Release Manifest Manager
+* Release manifest model
+* Release manifest service
+* Dashboard release integration
+
+## v0.5.0
+
+* Current task model
+* Current task persistence service
+* Current task manager widget
+* Controller integration
+* Main window integration
+* Current task loading
+* Current task saving
+* Read/write support for `.forgebud/current_task.md`
 
 ---
 
 # Current Architecture
 
-Current Layers
+* Controllers coordinate application workflows.
+* Services perform all project and persistence logic.
+* Widgets present data and emit user actions.
+* Models contain application state only.
 
-- MainWindow
-- Widgets
-- Controllers
-- Services
-- Models
-
----
-
-# Next Development Tasks (Priority Order)
-
-## 1
-
-Current Task Manager.
+Current Task Manager now follows the same architecture as the existing project metadata and release manifest systems.
 
 ---
 
-## 2
+# Current Release Status
 
-Coding Standards support.
+Release: **v0.5.0**
 
----
+State:
 
-## 3
-
-Project Summary Generator.
-
----
-
-## 4
-
-Prompt Builder.
+* Compiles successfully.
+* Application launches successfully.
+* Current Task Manager integrated.
+* Existing functionality preserved.
+* Ready for documentation updates and repository commit.
 
 ---
 
-# Current Rules
+# Next Planned Milestone
 
-Development follows FORGEBUD_PRINCIPLES.md.
+**v0.6.0 — Decisions Manager**
 
-Architecture follows ARCHITECTURE.md.
+Planned work:
 
-Future planning follows ROADMAP.md.
-
-Every generated source file must be a complete replacement file.
-
-Never generate snippets.
-
-Never guess unseen code.
-
-Controllers coordinate.
-
-Services perform work.
-
-Widgets display data.
-
-Models contain state.
+* Decisions model
+* Decisions service
+* Decisions widget
+* Controller integration
+* Main window integration
+* Persistent management of `.forgebud/decisions.md`
 
 ---
 
-# Long-Term Vision
+# Repository Status
 
-ForgeBud will become an AI-powered software engineering workspace.
+Working tree contains the completed v0.5.0 implementation and pending documentation updates.
 
-Its primary purpose is to:
+Next workflow step:
 
-- preserve project knowledge
-- generate AI context
-- validate AI responses
-- safely apply AI-generated code
-- support multiple AI providers
-- accelerate software development
+1. Update `current_task.md`
+2. Update `release_manifest.md`
+3. Update `decisions.md` (only if architecture changes)
+4. Commit
+5. Push

@@ -1,98 +1,117 @@
 # Release Manifest
 
-## Current Release
+## Release
 
-### Version
+Version: **v0.5.0**
 
-v0.4.0
+Name: **Current Task Manager**
 
-### Goal
+Status: **Ready for Commit**
 
-Implement an extensible Project Dashboard.
+---
 
-### Files Added
+# Goal
 
-- `models/project_dashboard.py`
-- `widgets/project_dashboard.py`
+Add full support for managing the active engineering task stored in project memory while preserving ForgeBud's layered architecture and existing functionality.
 
-### Files Changed
+---
 
-- `controllers/project_controller.py`
-- `main_window.py`
+# Files Added
 
-### Files Removed
+* `models/current_task.py`
+* `services/current_task_service.py`
+* `widgets/current_task_manager.py`
+
+---
+
+# Files Modified
+
+* `controllers/project_controller.py`
+* `main_window.py`
+* `.forgebud/PROJECT_STATE.md`
+* `.forgebud/current_task.md`
+* `.forgebud/release_manifest.md`
+
+---
+
+# Files Removed
 
 None.
 
-### Tests
+---
 
-The full project compiled successfully with:
+# Validation
 
-```text
-python -m compileall main.py main_window.py controllers models services widgets
-```
+Compilation:
 
-### Release Notes
+* Passed
 
-- Project metadata, Git context, and release metadata are combined in
-  a dedicated dashboard state model.
-- ProjectDashboardWidget displays dashboard state without using
-  services or persistent storage.
-- ProjectController coordinates dashboard state loading through the
-  existing services.
-- MainWindow composes the dashboard and forwards state to its widget.
+Application Startup:
 
-### Known Issues
+* Passed
 
-None recorded.
+Manual Validation:
 
-### Future Work
+* Current task loads correctly.
+* Current task saves correctly.
+* Editing is disabled for uninitialized projects.
+* Editing is enabled for initialized projects.
+* Existing project loading preserved.
+* Existing dashboard preserved.
+* Existing Git integration preserved.
+* Existing release manifest functionality preserved.
 
-- Add refresh controls when dashboard update actions are introduced.
-- Extend dashboard state with future project metadata and status
-  features.
-- Implement Current Task Manager support.
+---
 
-## Previous Release
+# Known Issues
 
-### Version
+None.
 
-v0.3.0
+---
 
-### Goal
+# Architectural Compliance
 
-Implement backend Release Manifest support.
+Verified.
 
-### Files Added
+* Controllers coordinate workflows.
+* Services perform all persistence.
+* Widgets display state only.
+* Models contain application state only.
 
-- `models/release_manifest.py`
-- `services/release_manifest_service.py`
+No architectural deviations were introduced.
 
-### Validation
+---
 
-```text
-python -m compileall models\release_manifest.py services\release_manifest_service.py
-```
+# Release Notes
 
-## Earlier Release
+This release introduces ForgeBud's Current Task Manager, allowing projects to persist and edit the active engineering task through the application interface. The implementation follows the existing layered architecture and integrates with project loading and initialization workflows without changing previous functionality.
 
-### Version
+---
 
-v0.2.0
+# Future Work
 
-### Goal
+## v0.6.0
 
-Implement complete Recent Projects support.
+Decisions Manager
 
-### Files Changed
+Planned additions:
 
-- `services/settings_service.py`
-- `controllers/project_controller.py`
-- `widgets/project_panel.py`
-- `main_window.py`
+* Decisions model
+* Decisions persistence service
+* Decisions widget
+* Controller integration
+* Main window integration
 
-### Validation
+---
 
-```text
-python -m compileall main_window.py controllers\project_controller.py services\settings_service.py widgets\project_panel.py
-```
+# Release State
+
+Implementation Complete
+
+Compilation Passed
+
+Runtime Validation Passed
+
+Ready to Commit
+
+Ready to Push

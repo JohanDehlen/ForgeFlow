@@ -8,9 +8,13 @@ from PySide6.QtWidgets import (
 )
 
 from controllers.project_controller import ProjectController
+from models.current_task import CurrentTask
 from models.project_dashboard import ProjectDashboard
 from models.project_info import ProjectInfo
 from version import APP_NAME, APP_VERSION
+from widgets.current_task_manager import (
+    CurrentTaskManagerWidget,
+)
 from widgets.project_dashboard import ProjectDashboardWidget
 from widgets.project_panel import ProjectPanel
 from widgets.status_bar import StatusBar
@@ -34,6 +38,7 @@ class MainWindow(QMainWindow):
 
         self.projectController.refresh_recent_projects()
         self.projectController.refresh_project_dashboard()
+        self.projectController.refresh_current_task()
 
     def _create_ui(self) -> None:
         """
@@ -48,8 +53,15 @@ class MainWindow(QMainWindow):
         self.projectPanel = ProjectPanel()
         content_layout.addWidget(self.projectPanel)
 
+        workspace_layout = QVBoxLayout()
+
         self.projectDashboard = ProjectDashboardWidget()
-        content_layout.addWidget(self.projectDashboard)
+        workspace_layout.addWidget(self.projectDashboard)
+
+        self.currentTaskManager = CurrentTaskManagerWidget()
+        workspace_layout.addWidget(self.currentTaskManager)
+
+        content_layout.addLayout(workspace_layout)
 
         main_layout.addLayout(content_layout)
 
@@ -74,6 +86,9 @@ class MainWindow(QMainWindow):
         )
         self.projectPanel.recentProjectSelected.connect(
             self.projectController.open_recent_project
+        )
+        self.currentTaskManager.saveRequested.connect(
+            self.projectController.save_current_task
         )
 
     def show_status(self, message: str) -> None:
@@ -123,6 +138,35 @@ class MainWindow(QMainWindow):
         Display current project dashboard state.
         """
         self.projectDashboard.set_dashboard(dashboard)
+
+    def set_current_task(
+        self,
+        current_task: CurrentTask,
+    ) -> None:
+        """
+        Display current-task state.
+        """
+        self.currentTaskManager.set_current_task(
+            current_task
+        )
+
+    def clear_current_task(self) -> None:
+        """
+        Clear displayed current-task state.
+        """
+        self.currentTaskManager.clear()
+
+    def enable_current_task_editing(self) -> None:
+        """
+        Enable current-task editing and saving.
+        """
+        self.currentTaskManager.enable_editing()
+
+    def disable_current_task_editing(self) -> None:
+        """
+        Disable current-task editing and saving.
+        """
+        self.currentTaskManager.disable_editing()
 
     def set_recent_projects(
         self,
