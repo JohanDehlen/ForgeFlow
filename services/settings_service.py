@@ -1,5 +1,5 @@
 """
-ForgeFlow
+ForgeBud
 
 Application settings service.
 
@@ -18,7 +18,7 @@ from pathlib import Path
 class SettingsService:
     """
     Service responsible for loading and saving
-    ForgeFlow application settings.
+    ForgeBud application settings.
     """
 
     CONFIG_DIR = Path("config")

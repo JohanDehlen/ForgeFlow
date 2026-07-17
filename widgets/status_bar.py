@@ -1,5 +1,5 @@
 """
-ForgeFlow
+ForgeBud
 
 Application status bar.
 

@@ -1,96 +1,96 @@
-"""
-ForgeFlow
-
-Project selection panel.
-
-Responsibilities:
-- Display the currently selected project folder.
-- Allow the user to browse for a project.
-- Provide a clean public API for accessing the project path.
-"""
-
-from pathlib import Path
-
-from PySide6.QtCore import Signal
 from PySide6.QtWidgets import (
-    QFileDialog,
-    QGroupBox,
-    QHBoxLayout,
-    QLineEdit,
-    QPushButton,
+    QWidget,
     QVBoxLayout,
+    QFormLayout,
+    QLabel,
+    QPushButton,
+    QHBoxLayout,
+    QFrame,
 )
 
+from models.project_info import ProjectInfo
 
-class ProjectPanel(QGroupBox):
-    """
-    Widget responsible for selecting and displaying
-    the current project folder.
-    """
 
-    projectChanged = Signal(str)
+class ProjectPanel(QWidget):
+    """
+    Displays information about the currently
+    opened project.
+    """
 
     def __init__(self):
-        super().__init__("Project")
+        super().__init__()
 
-        self._build_ui()
+        mainLayout = QVBoxLayout(self)
 
-    def _build_ui(self) -> None:
+        # -------------------------------------
+        # Project Information
+        # -------------------------------------
 
-        layout = QVBoxLayout(self)
+        form = QFormLayout()
 
-        row = QHBoxLayout()
+        self.nameLabel = QLabel("-")
+        self.versionLabel = QLabel("-")
+        self.languageLabel = QLabel("-")
+        self.frameworkLabel = QLabel("-")
+        self.repositoryLabel = QLabel("Not Loaded")
 
-        self.pathEdit = QLineEdit()
-        self.pathEdit.setReadOnly(True)
-        self.pathEdit.setPlaceholderText(
-            "No project selected..."
-        )
+        form.addRow("Project", self.nameLabel)
+        form.addRow("Version", self.versionLabel)
+        form.addRow("Language", self.languageLabel)
+        form.addRow("Framework", self.frameworkLabel)
+        form.addRow("Repository", self.repositoryLabel)
 
-        self.browseButton = QPushButton("Browse...")
+        mainLayout.addLayout(form)
 
-        row.addWidget(self.pathEdit)
-        row.addWidget(self.browseButton)
+        # -------------------------------------
+        # Separator
+        # -------------------------------------
 
-        layout.addLayout(row)
+        line = QFrame()
+        line.setFrameShape(QFrame.HLine)
 
-        self.browseButton.clicked.connect(
-            self._browse_project
-        )
+        mainLayout.addWidget(line)
 
-    # -------------------------------------------------
-    # Public API
-    # -------------------------------------------------
+        # -------------------------------------
+        # Buttons
+        # -------------------------------------
 
-    def project_path(self) -> str:
+        buttonLayout = QHBoxLayout()
+
+        self.openButton = QPushButton("Open Project")
+        self.initializeButton = QPushButton("Initialize ForgeBud")
+
+        buttonLayout.addWidget(self.openButton)
+        buttonLayout.addWidget(self.initializeButton)
+
+        mainLayout.addLayout(buttonLayout)
+
+        mainLayout.addStretch()
+
+    def clear(self):
         """
-        Return the current project path.
+        Clears the displayed project information.
         """
 
-        return self.pathEdit.text()
+        self.nameLabel.setText("-")
+        self.versionLabel.setText("-")
+        self.languageLabel.setText("-")
+        self.frameworkLabel.setText("-")
+        self.repositoryLabel.setText("Not Loaded")
 
-    def set_project_path(self, path: str) -> None:
+    def set_project(self, info: ProjectInfo):
         """
-        Set the current project path.
+        Displays project information.
         """
 
-        self.pathEdit.setText(path)
+        self.nameLabel.setText(info.name or "-")
+        self.versionLabel.setText(info.version or "-")
+        self.languageLabel.setText(info.language or "-")
+        self.frameworkLabel.setText(info.framework or "-")
 
-    # -------------------------------------------------
-    # Private
-    # -------------------------------------------------
+    def set_repository_status(self, status: str):
+        """
+        Updates the repository status.
+        """
 
-    def _browse_project(self) -> None:
-
-        folder = QFileDialog.getExistingDirectory(
-            self,
-            "Select Project Folder",
-            self.project_path() or str(Path.home()),
-        )
-
-        if not folder:
-            return
-
-        self.set_project_path(folder)
-
-        self.projectChanged.emit(folder)
+        self.repositoryLabel.setText(status)

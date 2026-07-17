@@ -19,3 +19,6 @@ dist/
 # OS files
 Thumbs.db
 .DS_Store
+
+# Local application settings
+config/settings.json

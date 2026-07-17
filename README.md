@@ -1,6 +1,6 @@
-# ForgeFlow
+# ForgeBud
 
-ForgeFlow is an AI-assisted software development companion.
+ForgeBud is an AI-assisted software development companion.
 
 It helps developers maintain project context, generate high-quality prompts for AI coding assistants, and manage software development workflows.
 

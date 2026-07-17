@@ -1,0 +1,11 @@
+{
+    "name": "ForgeBud",
+    "version": "0.3.0",
+    "description": "AI Software Development Workspace",
+    "language": "Python",
+    "framework": "PySide6",
+    "repository": "",
+    "created_by": "ForgeBud",
+    "forgebud_version": "0.3.0",
+    "assistant_rules": []
+}

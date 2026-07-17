@@ -1,6 +1,5 @@
 """
-ForgeFlow
-
+ForgeBud
 Application entry point.
 
 Responsibilities:

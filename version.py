@@ -1,17 +1,21 @@
 """
-ForgeFlow
-Version information
+ForgeBud
 
-This module acts as the single source of truth for all
+Version information.
+
+This module is the single source of truth for all
 application metadata.
 """
 
-APP_NAME = "ForgeFlow"
-APP_DESCRIPTION = "AI-Assisted Software Development"
+APP_NAME = "ForgeBud"
+
+APP_DESCRIPTION = (
+    "AI-Assisted Software Development Workspace"
+)
 
 VERSION_MAJOR = 0
-VERSION_MINOR = 1
-VERSION_PATCH = 0
+VERSION_MINOR = 3
+VERSION_PATCH = 1
 
 APP_VERSION = (
     f"{VERSION_MAJOR}."
