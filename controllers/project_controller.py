@@ -4,10 +4,12 @@ from pathlib import Path
 from typing import Protocol
 
 from models.current_task import CurrentTask
+from models.decisions import Decisions
 from models.project_dashboard import ProjectDashboard
 from models.project_info import ProjectInfo
 from services.context_service import ContextService
 from services.current_task_service import CurrentTaskService
+from services.decisions_service import DecisionsService
 from services.git_service import GitService
 from services.project_service import ProjectService
 from services.release_manifest_service import (
@@ -82,6 +84,29 @@ class ProjectWindow(Protocol):
         Disable current-task editing and saving.
         """
 
+    def set_decisions(
+        self,
+        decisions: Decisions,
+    ) -> None:
+        """
+        Display engineering decisions state.
+        """
+
+    def clear_decisions(self) -> None:
+        """
+        Clear displayed engineering decisions state.
+        """
+
+    def enable_decisions_editing(self) -> None:
+        """
+        Enable engineering decisions editing and saving.
+        """
+
+    def disable_decisions_editing(self) -> None:
+        """
+        Disable engineering decisions editing and saving.
+        """
+
     def enable_initialize(self) -> None:
         """
         Enable project initialization.
@@ -104,7 +129,7 @@ class ProjectWindow(Protocol):
 class ProjectController:
     """
     Coordinates project selection, loading, initialization,
-    dashboard state, current-task state, and recent-project
+    dashboard state, project-memory documents, and recent-project
     presentation.
     """
 
@@ -135,7 +160,7 @@ class ProjectController:
 
     def load_project(self, folder: str | Path) -> None:
         """
-        Load project, repository, dashboard, and current-task
+        Load project, repository, dashboard, and project-memory
         information.
         """
         project_path = Path(folder)
@@ -159,6 +184,7 @@ class ProjectController:
 
         self.refresh_project_dashboard()
         self.refresh_current_task()
+        self.refresh_decisions()
 
     def initialize_project(self) -> None:
         """
@@ -192,21 +218,9 @@ class ProjectController:
         """
         Save current-task Markdown for the opened project.
         """
-        if self._project_path is None:
-            self._window.show_information(
-                "No Project",
-                "Please open a project first.",
-            )
-            return
-
-        if not ProjectService.is_initialized(
-            self._project_path
+        if not self._can_save_project_document(
+            "its current task"
         ):
-            self._window.show_information(
-                "Project Not Initialized",
-                "Initialize the project before saving "
-                "its current task.",
-            )
             return
 
         current_task = CurrentTask(markdown=markdown)
@@ -229,6 +243,37 @@ class ProjectController:
         self.refresh_current_task()
         self._window.show_status(
             "Current task saved successfully."
+        )
+
+    def save_decisions(self, markdown: str) -> None:
+        """
+        Save engineering decisions Markdown for the opened project.
+        """
+        if not self._can_save_project_document(
+            "its engineering decisions"
+        ):
+            return
+
+        decisions = Decisions(markdown=markdown)
+
+        try:
+            DecisionsService.save(
+                self._project_path,
+                decisions,
+            )
+        except ValueError as error:
+            self._window.show_information(
+                "Engineering Decisions",
+                str(error),
+            )
+            self._window.show_status(
+                "Engineering decisions could not be saved."
+            )
+            return
+
+        self.refresh_decisions()
+        self._window.show_status(
+            "Engineering decisions saved successfully."
         )
 
     def refresh_recent_projects(self) -> None:
@@ -277,14 +322,7 @@ class ProjectController:
         """
         Load and display current-task state for the opened project.
         """
-        if self._project_path is None:
-            self._window.clear_current_task()
-            self._window.disable_current_task_editing()
-            return
-
-        if not ProjectService.is_initialized(
-            self._project_path
-        ):
+        if not self._has_initialized_project():
             self._window.clear_current_task()
             self._window.disable_current_task_editing()
             return
@@ -295,6 +333,59 @@ class ProjectController:
 
         self._window.set_current_task(current_task)
         self._window.enable_current_task_editing()
+
+    def refresh_decisions(self) -> None:
+        """
+        Load and display engineering decisions for the opened project.
+        """
+        if not self._has_initialized_project():
+            self._window.clear_decisions()
+            self._window.disable_decisions_editing()
+            return
+
+        decisions = DecisionsService.load(
+            self._project_path
+        )
+
+        self._window.set_decisions(decisions)
+        self._window.enable_decisions_editing()
+
+    def _can_save_project_document(
+        self,
+        document_description: str,
+    ) -> bool:
+        """
+        Return whether a project-memory document may be saved.
+        """
+        if self._project_path is None:
+            self._window.show_information(
+                "No Project",
+                "Please open a project first.",
+            )
+            return False
+
+        if not ProjectService.is_initialized(
+            self._project_path
+        ):
+            self._window.show_information(
+                "Project Not Initialized",
+                "Initialize the project before saving "
+                f"{document_description}.",
+            )
+            return False
+
+        return True
+
+    def _has_initialized_project(self) -> bool:
+        """
+        Return whether an initialized project is currently open.
+        """
+        return (
+            self._project_path is not None
+            and ProjectService.is_initialized(
+                self._project_path
+            )
+        )
 
     def _update_repository_status(self) -> None:
         """
@@ -333,8 +424,13 @@ class ProjectController:
             "Project not initialized"
         )
         self._window.enable_initialize()
+
         self._window.clear_current_task()
         self._window.disable_current_task_editing()
+
+        self._window.clear_decisions()
+        self._window.disable_decisions_editing()
+
         self._window.show_status(
             "Project ready for initialization."
         )

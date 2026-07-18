@@ -9,12 +9,14 @@ from PySide6.QtWidgets import (
 
 from controllers.project_controller import ProjectController
 from models.current_task import CurrentTask
+from models.decisions import Decisions
 from models.project_dashboard import ProjectDashboard
 from models.project_info import ProjectInfo
 from version import APP_NAME, APP_VERSION
 from widgets.current_task_manager import (
     CurrentTaskManagerWidget,
 )
+from widgets.decisions_manager import DecisionsManagerWidget
 from widgets.project_dashboard import ProjectDashboardWidget
 from widgets.project_panel import ProjectPanel
 from widgets.status_bar import StatusBar
@@ -39,6 +41,7 @@ class MainWindow(QMainWindow):
         self.projectController.refresh_recent_projects()
         self.projectController.refresh_project_dashboard()
         self.projectController.refresh_current_task()
+        self.projectController.refresh_decisions()
 
     def _create_ui(self) -> None:
         """
@@ -58,9 +61,19 @@ class MainWindow(QMainWindow):
         self.projectDashboard = ProjectDashboardWidget()
         workspace_layout.addWidget(self.projectDashboard)
 
-        self.currentTaskManager = CurrentTaskManagerWidget()
-        workspace_layout.addWidget(self.currentTaskManager)
+        project_memory_layout = QHBoxLayout()
 
+        self.currentTaskManager = CurrentTaskManagerWidget()
+        project_memory_layout.addWidget(
+            self.currentTaskManager
+        )
+
+        self.decisionsManager = DecisionsManagerWidget()
+        project_memory_layout.addWidget(
+            self.decisionsManager
+        )
+
+        workspace_layout.addLayout(project_memory_layout)
         content_layout.addLayout(workspace_layout)
 
         main_layout.addLayout(content_layout)
@@ -89,6 +102,9 @@ class MainWindow(QMainWindow):
         )
         self.currentTaskManager.saveRequested.connect(
             self.projectController.save_current_task
+        )
+        self.decisionsManager.saveRequested.connect(
+            self.projectController.save_decisions
         )
 
     def show_status(self, message: str) -> None:
@@ -167,6 +183,33 @@ class MainWindow(QMainWindow):
         Disable current-task editing and saving.
         """
         self.currentTaskManager.disable_editing()
+
+    def set_decisions(
+        self,
+        decisions: Decisions,
+    ) -> None:
+        """
+        Display engineering decisions state.
+        """
+        self.decisionsManager.set_decisions(decisions)
+
+    def clear_decisions(self) -> None:
+        """
+        Clear displayed engineering decisions state.
+        """
+        self.decisionsManager.clear()
+
+    def enable_decisions_editing(self) -> None:
+        """
+        Enable engineering decisions editing and saving.
+        """
+        self.decisionsManager.enable_editing()
+
+    def disable_decisions_editing(self) -> None:
+        """
+        Disable engineering decisions editing and saving.
+        """
+        self.decisionsManager.disable_editing()
 
     def set_recent_projects(
         self,

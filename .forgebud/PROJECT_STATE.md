@@ -2,9 +2,9 @@
 
 ## Current Version
 
-**v0.5.0**
+**v0.6.0**
 
-Status: **Current Task Manager Complete (Awaiting Commit)**
+Status: **Decisions Manager Complete (Awaiting Commit)**
 
 ---
 
@@ -37,65 +37,71 @@ Status: **Current Task Manager Complete (Awaiting Commit)**
 
 ## v0.5.0
 
+* Current Task Manager
 * Current task model
 * Current task persistence service
-* Current task manager widget
+* Current task widget
 * Controller integration
 * Main window integration
-* Current task loading
-* Current task saving
-* Read/write support for `.forgebud/current_task.md`
+
+## v0.6.0
+
+* Decisions model
+* Decisions persistence service
+* Decisions manager widget
+* Controller integration
+* Main window integration
+* Read/write support for `.forgebud/decisions.md`
 
 ---
 
 # Current Architecture
 
-* Controllers coordinate application workflows.
-* Services perform all project and persistence logic.
-* Widgets present data and emit user actions.
+ForgeBud follows a layered architecture:
+
+* Controllers coordinate workflows.
+* Services perform business logic and persistence.
+* Widgets display state and emit user actions.
 * Models contain application state only.
 
-Current Task Manager now follows the same architecture as the existing project metadata and release manifest systems.
+Project memory now includes:
+
+* Project metadata
+* Release manifest
+* Current task
+* Engineering decisions
+
+All follow the same architectural pattern.
 
 ---
 
 # Current Release Status
 
-Release: **v0.5.0**
+Release: **v0.6.0 – Decisions Manager**
 
 State:
 
-* Compiles successfully.
-* Application launches successfully.
-* Current Task Manager integrated.
-* Existing functionality preserved.
-* Ready for documentation updates and repository commit.
+* Successfully implemented.
+* Successfully compiled.
+* Successfully runtime tested.
+* Awaiting commit and push.
 
 ---
 
 # Next Planned Milestone
 
-**v0.6.0 — Decisions Manager**
-
-Planned work:
-
-* Decisions model
-* Decisions service
-* Decisions widget
-* Controller integration
-* Main window integration
-* Persistent management of `.forgebud/decisions.md`
+The next roadmap milestone should be determined from the repository after v0.6.0 has been committed and pushed.
 
 ---
 
 # Repository Status
 
-Working tree contains the completed v0.5.0 implementation and pending documentation updates.
+Working tree contains the completed v0.6.0 implementation and pending documentation updates.
 
 Next workflow step:
 
 1. Update `current_task.md`
 2. Update `release_manifest.md`
-3. Update `decisions.md` (only if architecture changes)
+3. Update `decisions.md` (only if architecture changed)
 4. Commit
 5. Push

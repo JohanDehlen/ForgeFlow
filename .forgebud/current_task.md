@@ -2,9 +2,9 @@
 
 ## Active Release
 
-Version: **v0.5.0**
+Version: **v0.6.0**
 
-Milestone: **Current Task Manager**
+Milestone: **Decisions Manager**
 
 Status: **Complete — Ready for Commit**
 
@@ -12,28 +12,21 @@ Status: **Complete — Ready for Commit**
 
 # Summary
 
-The Current Task Manager has been successfully implemented.
+The Decisions Manager has been successfully implemented and integrated into ForgeBud.
 
-The feature is now fully integrated into ForgeBud using the existing architecture:
-
-* Controllers coordinate workflows.
-* Services perform persistence.
-* Widgets display and edit state.
-* Models contain state only.
-
-The application compiles successfully and launches without runtime errors.
+Engineering decisions are now managed through the application using the same layered architecture as the other project-memory documents.
 
 ---
 
 # Completed Work
 
-* Added `CurrentTask` model.
-* Added `CurrentTaskService`.
-* Added `CurrentTaskManagerWidget`.
-* Integrated current-task loading.
-* Integrated current-task saving.
-* Connected controller to the new service.
-* Integrated widget into the main window.
+* Added `Decisions` model.
+* Added `DecisionsService`.
+* Added `DecisionsManagerWidget`.
+* Integrated decisions loading.
+* Integrated decisions saving.
+* Connected the controller to the new service.
+* Integrated the widget into the main window.
 * Disabled editing for uninitialized projects.
 * Enabled editing for initialized projects.
 * Preserved all existing functionality.
@@ -48,8 +41,9 @@ Completed successfully:
 * Application launches.
 * Existing dashboard remains functional.
 * Existing project management remains functional.
-* Current task loads from project memory.
-* Current task saves back to project memory.
+* Current Task Manager remains functional.
+* Engineering decisions load correctly.
+* Engineering decisions save correctly.
 
 ---
 
@@ -67,22 +61,11 @@ Repository Status: Ready for final documentation update and commit.
 
 ---
 
-# Next Release
+# Next Step
 
-Version: **v0.6.0**
+Determine the next roadmap milestone after v0.6.0 has been committed and pushed.
 
-Milestone:
-
-**Decisions Manager**
-
-Planned implementation:
-
-* Decisions model
-* Decisions persistence service
-* Decisions widget
-* Controller integration
-* Main window integration
-* Persistent management of `.forgebud/decisions.md`
+The next release specification will be created from the repository roadmap rather than assumed.
 
 ---
 
@@ -92,4 +75,4 @@ Update:
 
 * `.forgebud/release_manifest.md`
 
-After that, commit and push the completed v0.5.0 release.
+Then verify whether `.forgebud/decisions.md` requires any architectural updates before committing and pushing the release.
