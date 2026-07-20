@@ -6,13 +6,13 @@ Version: **v0.8.0**
 
 Name: **Project Summary**
 
-Status: **Ready for Commit**
+Status: **Released**
 
 ---
 
 # Goal
 
-Introduce managed Project Summary support so ForgeBud can create, load, display, edit, and persist concise project summaries stored in `.forgebud/project_summary.md`, while preserving the existing layered architecture and all current functionality.
+Introduce managed Project Summary support so ForgeBud can create, load, display, edit, and persist concise project summaries stored in `.forgebud/project_summary.md`, while preserving the existing layered architecture and all existing functionality.
 
 ---
 
@@ -29,6 +29,11 @@ Introduce managed Project Summary support so ForgeBud can create, load, display,
 * `services/project_service.py`
 * `controllers/project_controller.py`
 * `main_window.py`
+
+---
+
+# Files Updated During Release Documentation
+
 * `.forgebud/PROJECT_STATE.md`
 * `.forgebud/current_task.md`
 * `.forgebud/release_manifest.md`
@@ -59,17 +64,15 @@ Verified successfully:
 
 * Application starts without exceptions.
 * Project Summary Manager appears correctly.
-* The project-memory workspace displays four managers in a 2×2 grid.
-* No project loaded results in a cleared and disabled Project Summary editor.
-* Uninitialized projects also display a cleared and disabled editor.
-* Initialized projects without `project_summary.md` load valid empty editable state.
+* Four project-memory managers display in a 2×2 grid.
+* Existing initialized projects without `project_summary.md` load valid empty editable state.
 * Saving creates `project_summary.md`.
 * Saved project summaries reload correctly.
 * Newly initialized projects receive a starter project-summary document.
 * Existing project-summary documents are preserved.
-* Current Task Manager continues to function.
-* Decisions Manager continues to function.
-* Coding Standards Manager continues to function.
+* Current Task Manager remains functional.
+* Decisions Manager remains functional.
+* Coding Standards Manager remains functional.
 * Dashboard remains functional.
 * Recent-project support remains functional.
 * Project initialization remains functional.
@@ -86,17 +89,17 @@ Verified.
 * Models contain state only.
 * MainWindow owns UI composition only.
 
-The new 2×2 project-memory layout is a user-interface improvement only and does not introduce a new architectural pattern.
+The 2×2 project-memory layout is a presentation improvement only and does not introduce a new architectural pattern.
 
 ---
 
 # Release Notes
 
-This release expands ForgeBud's managed project-memory system by introducing Project Summary support.
+This release extends ForgeBud's managed project-memory system with Project Summary support.
 
-Projects can now maintain an editable Markdown summary describing their purpose, technology, intended users, current state, and important context. The summary is stored in `.forgebud/project_summary.md`, is created automatically for new projects, and is safely supported for existing projects that do not yet contain the document.
+Projects can now maintain an editable Markdown summary describing their purpose, technology, intended users, current development state, and important context. The summary is stored in `.forgebud/project_summary.md`, is created automatically for newly initialized projects, and is fully supported for existing projects that do not yet contain the document.
 
-The project-memory workspace has also been reorganized into a 2×2 grid, allowing all four project-memory managers to remain comfortably usable.
+The project-memory workspace has also been reorganized into a 2×2 grid, allowing all managed project documents to remain visible and usable.
 
 ---
 
@@ -116,14 +119,23 @@ Runtime Validation Passed
 
 Documentation Synchronized
 
-Ready for Commit
+Release Committed
 
-Ready for Push
+Release Pushed
+
+Repository Synchronized
 
 ---
 
 # Next Step
 
-Commit the completed v0.8.0 release and push it to GitHub.
+The v0.8.0 release is complete.
 
-After the repository is synchronized, inspect `.forgebud/ROADMAP.md` to determine the next incomplete roadmap milestone before beginning v0.9.0.
+Before beginning v0.9.0:
+
+1. Re-read every document in `.forgebud`.
+2. Inspect `.forgebud/ROADMAP.md`.
+3. Determine the next incomplete roadmap objective.
+4. Create a complete release specification.
+5. Inspect every required implementation dependency.
+6. Continue with one implementation file at a time.
