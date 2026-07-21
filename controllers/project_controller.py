@@ -9,12 +9,18 @@ from models.decisions import Decisions
 from models.project_dashboard import ProjectDashboard
 from models.project_info import ProjectInfo
 from models.project_summary import ProjectSummary
+from services.clipboard_export_service import (
+    ClipboardExportService,
+)
 from services.coding_standards_service import (
     CodingStandardsService,
 )
 from services.context_service import ContextService
 from services.current_task_service import CurrentTaskService
 from services.decisions_service import DecisionsService
+from services.engineering_context_service import (
+    EngineeringContextService,
+)
 from services.git_service import GitService
 from services.project_service import ProjectService
 from services.project_summary_service import (
@@ -23,6 +29,7 @@ from services.project_summary_service import (
 from services.project_validation_service import (
     ProjectValidationService,
 )
+from services.prompt_builder_service import PromptBuilderService
 from services.release_manifest_service import (
     ReleaseManifestService,
 )
@@ -54,9 +61,18 @@ class ProjectWindow(Protocol):
         Return confirmed project information or None when canceled.
         """
 
-    def show_information(self, title: str, message: str) -> None:
+    def show_information(
+        self,
+        title: str,
+        message: str,
+    ) -> None:
         """
         Display an informational message dialog.
+        """
+
+    def selected_prompt_template_key(self) -> str:
+        """
+        Return the selected prompt-template key.
         """
 
     def set_project(self, info: ProjectInfo) -> None:
@@ -197,7 +213,7 @@ class ProjectController:
     """
     Coordinates project selection, loading, initialization,
     dashboard state, project validation, project-memory documents,
-    and recent-project presentation.
+    prompt export, and recent-project presentation.
     """
 
     def __init__(self, window: ProjectWindow) -> None:
@@ -304,6 +320,72 @@ class ProjectController:
         )
         self._window.show_status(
             "Project initialized successfully."
+        )
+
+    def export_prompt_to_clipboard(self) -> None:
+        """
+        Build and copy the current project's engineering prompt.
+        """
+        if self._project_path is None:
+            self._window.show_information(
+                "No Project",
+                "Please open a project first.",
+            )
+            return
+
+        if not ProjectService.is_initialized(
+            self._project_path
+        ):
+            self._window.show_information(
+                "Project Not Initialized",
+                "Initialize the project before copying its prompt.",
+            )
+            self._window.show_status(
+                "Prompt could not be copied."
+            )
+            return
+
+        template_key = (
+            self._window.selected_prompt_template_key()
+        )
+
+        try:
+            context = EngineeringContextService.build(
+                self._project_path
+            )
+            prompt = PromptBuilderService.build(
+                context,
+                template_key,
+            )
+            result = ClipboardExportService.export(prompt)
+        except (
+            OSError,
+            RuntimeError,
+            TypeError,
+            ValueError,
+        ) as error:
+            self._window.show_information(
+                "Copy Engineering Prompt",
+                str(error),
+            )
+            self._window.show_status(
+                "Prompt could not be copied."
+            )
+            return
+
+        if not result.success:
+            self._window.show_information(
+                "Copy Engineering Prompt",
+                result.message or "Prompt export failed.",
+            )
+            self._window.show_status(
+                "Prompt could not be copied."
+            )
+            return
+
+        self._window.show_status(
+            f"{result.message} "
+            f"({prompt.token_estimate} estimated tokens)"
         )
 
     def save_project_summary(self, markdown: str) -> None:

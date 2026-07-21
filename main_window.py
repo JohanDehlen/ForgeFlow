@@ -137,6 +137,9 @@ class MainWindow(QMainWindow):
         self.projectPanel.initializeButton.clicked.connect(
             self.projectController.initialize_project
         )
+        self.projectPanel.copyPromptButton.clicked.connect(
+            self.projectController.export_prompt_to_clipboard
+        )
         self.projectPanel.recentProjectSelected.connect(
             self.projectController.open_recent_project
         )
@@ -187,11 +190,21 @@ class MainWindow(QMainWindow):
 
         return dialog.project_info()
 
-    def show_information(self, title: str, message: str) -> None:
+    def show_information(
+        self,
+        title: str,
+        message: str,
+    ) -> None:
         """
         Display an informational message dialog.
         """
         QMessageBox.information(self, title, message)
+
+    def selected_prompt_template_key(self) -> str:
+        """
+        Return the selected prompt-template key.
+        """
+        return self.projectPanel.selected_prompt_template_key()
 
     def set_project(self, info: ProjectInfo) -> None:
         """

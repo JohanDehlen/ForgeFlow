@@ -3,7 +3,8 @@ ForgeBud
 
 Prompt Builder service.
 
-Builds a deterministic development prompt from an EngineeringContext.
+Builds a deterministic development prompt from an
+EngineeringContext.
 """
 
 from __future__ import annotations
@@ -13,6 +14,8 @@ from models.prompt import Prompt
 from services.engineering_context_serializer import (
     EngineeringContextSerializer,
 )
+from services.prompt_template_service import PromptTemplateService
+from services.token_estimator_service import TokenEstimatorService
 
 
 class PromptBuilderService:
@@ -20,35 +23,44 @@ class PromptBuilderService:
     Builds provider-independent development prompts.
     """
 
-    DEFAULT_TITLE = (
-        "ForgeBud Engineering Context"
-    )
+    DEFAULT_TITLE = "ForgeBud Engineering Context"
 
     @classmethod
     def build(
         cls,
         context: EngineeringContext,
+        template_key: str | None = None,
     ) -> Prompt:
         """
         Construct a Prompt from an EngineeringContext.
+
+        Use the default prompt template when no template key is
+        supplied.
         """
         markdown = EngineeringContextSerializer.to_markdown(
             context
         )
 
-        instructions = cls._developer_instructions()
+        if template_key is None:
+            template = PromptTemplateService.default()
+        else:
+            template = PromptTemplateService.get(template_key)
 
         prompt_text = (
             markdown.rstrip()
             + "\n\n"
-            + instructions
+            + template.instructions.rstrip()
+            + "\n\n"
+            + cls._developer_instructions()
             + "\n"
         )
 
         return Prompt(
-            title=cls.DEFAULT_TITLE,
+            title=f"{cls.DEFAULT_TITLE} — {template.name}",
             markdown=prompt_text,
-            token_estimate=0,
+            token_estimate=TokenEstimatorService.estimate(
+                prompt_text
+            ),
         )
 
     @staticmethod

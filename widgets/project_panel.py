@@ -4,6 +4,7 @@ from pathlib import Path
 
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import (
+    QComboBox,
     QFormLayout,
     QFrame,
     QHBoxLayout,
@@ -16,11 +17,13 @@ from PySide6.QtWidgets import (
 )
 
 from models.project_info import ProjectInfo
+from services.prompt_template_service import PromptTemplateService
 
 
 class ProjectPanel(QWidget):
     """
-    Displays current-project information and recent projects.
+    Displays current-project information, project actions,
+    prompt settings, and recent projects.
     """
 
     recentProjectSelected = Signal(str)
@@ -66,9 +69,9 @@ class ProjectPanel(QWidget):
         main_layout: QVBoxLayout,
     ) -> None:
         """
-        Create project action buttons.
+        Create project and prompt action controls.
         """
-        button_layout = QHBoxLayout()
+        primary_button_layout = QHBoxLayout()
 
         self.openButton = QPushButton("Open Project")
         self.initializeButton = QPushButton(
@@ -76,10 +79,41 @@ class ProjectPanel(QWidget):
         )
         self.initializeButton.setEnabled(False)
 
-        button_layout.addWidget(self.openButton)
-        button_layout.addWidget(self.initializeButton)
+        primary_button_layout.addWidget(self.openButton)
+        primary_button_layout.addWidget(
+            self.initializeButton
+        )
 
-        main_layout.addLayout(button_layout)
+        main_layout.addLayout(primary_button_layout)
+
+        prompt_form = QFormLayout()
+
+        self.promptTemplateCombo = QComboBox()
+
+        for template in PromptTemplateService.all():
+            self.promptTemplateCombo.addItem(
+                template.name,
+                template.key,
+            )
+
+        prompt_form.addRow(
+            "Prompt Template",
+            self.promptTemplateCombo,
+        )
+
+        main_layout.addLayout(prompt_form)
+
+        self.copyPromptButton = QPushButton(
+            "Copy Engineering Prompt"
+        )
+        self.copyPromptButton.setEnabled(False)
+        self.copyPromptButton.setToolTip(
+            "Generate the current project's engineering prompt "
+            "using the selected template and copy it to the "
+            "clipboard."
+        )
+
+        main_layout.addWidget(self.copyPromptButton)
 
     def _create_recent_projects(
         self,
@@ -113,6 +147,17 @@ class ProjectPanel(QWidget):
 
         main_layout.addWidget(separator)
 
+    def selected_prompt_template_key(self) -> str:
+        """
+        Return the selected prompt-template key.
+        """
+        template_key = self.promptTemplateCombo.currentData()
+
+        if isinstance(template_key, str):
+            return template_key
+
+        return PromptTemplateService.DEFAULT_TEMPLATE_KEY
+
     def clear(self) -> None:
         """
         Clear the displayed current-project information.
@@ -124,15 +169,18 @@ class ProjectPanel(QWidget):
         self.repositoryLabel.setText("No Project Loaded")
 
         self.initializeButton.setEnabled(False)
+        self.copyPromptButton.setEnabled(False)
 
     def set_project(self, info: ProjectInfo) -> None:
         """
-        Display project metadata.
+        Display initialized project metadata.
         """
         self.nameLabel.setText(info.name or "-")
         self.versionLabel.setText(info.version or "-")
         self.languageLabel.setText(info.language or "-")
         self.frameworkLabel.setText(info.framework or "-")
+
+        self.copyPromptButton.setEnabled(True)
 
     def set_repository_status(self, text: str) -> None:
         """

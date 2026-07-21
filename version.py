@@ -3,8 +3,8 @@ ForgeBud
 
 Version information.
 
-This module is the single source of truth for all
-application metadata.
+This module is the single source of truth for all application
+metadata.
 """
 
 APP_NAME = "ForgeBud"
@@ -13,9 +13,9 @@ APP_DESCRIPTION = (
     "AI-Assisted Software Development Workspace"
 )
 
-VERSION_MAJOR = 0
-VERSION_MINOR = 3
-VERSION_PATCH = 1
+VERSION_MAJOR = 1
+VERSION_MINOR = 0
+VERSION_PATCH = 0
 
 APP_VERSION = (
     f"{VERSION_MAJOR}."

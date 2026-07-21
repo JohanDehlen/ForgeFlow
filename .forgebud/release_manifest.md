@@ -2,158 +2,126 @@
 
 ## Release
 
-Version: **v0.12.0**
+Version: **v0.13.0**
 
-Name: **Prompt Builder Foundation**
+Name: **Clipboard Export Foundation**
 
-Status: **Completed**
+Status: **Implementation In Progress**
 
 ---
 
 # Goal
 
-Create the first provider-independent Prompt Builder.
+Introduce ForgeBud’s first prompt-export workflow.
 
-The Prompt Builder transforms an Engineering Context into a deterministic development prompt that can be consumed by any AI provider or other engineering tool.
+This release allows an existing `Prompt` to be exported to the system clipboard so it can be pasted into ChatGPT, Claude, Gemini, or another consumer.
 
-This release intentionally performs no AI communication.
+Clipboard export is the first concrete prompt exporter. Future exporters may support files, AI providers, and other destinations.
 
 ---
 
-# Features Delivered
+# Objectives
 
-- Prompt model
-- PromptBuilderService
-- Engineering Context integration
-- Deterministic prompt generation
-- Standard developer instructions
-- Duplicate heading normalization
-- End-to-end prompt generation
-- Runtime validation
+- Add a prompt-export result model.
+- Add a clipboard-export service.
+- Export an existing `Prompt`.
+- Preserve provider independence.
+- Keep clipboard access outside models.
+- Add a user-facing prompt export workflow.
+- Provide clear success and failure feedback.
+- Validate the complete pipeline end to end.
 
 ---
 
 # Files Added
 
-- `models/prompt.py`
-- `services/prompt_builder_service.py`
+- `models/prompt_export.py`
+- `services/clipboard_export_service.py`
 
 ---
 
-# Files Modified
+# Files Expected to Change
 
-- `services/engineering_context_serializer.py`
+After dependency inspection:
 
----
+- `controllers/project_controller.py`
+- `main_window.py`
+- One appropriate widget for generating and copying the prompt
 
-# Files Removed
-
-None.
-
----
-
-# Architecture
-
-The engineering pipeline is now:
-
-```
-Repository
-      │
-      ▼
-Project Memory
-      │
-      ▼
-Engineering Context
-      │
-      ▼
-Prompt Builder
-      │
-      ▼
-Prompt
-      │
-      ▼
-Consumers
-```
-
-The Prompt Builder consumes only an `EngineeringContext`.
-
-It never reads project files directly.
-
-It performs no filesystem modification.
-
-It communicates with no AI provider.
+Additional files may change only when inspection confirms they are required.
 
 ---
 
-# Validation Performed
+# Completed Work
 
-## Compilation
-
-Passed.
-
-## Runtime
-
-Passed.
-
-Verified:
-
-- Prompt model creation
-- PromptBuilderService
-- Engineering Context integration
-- Deterministic prompt generation
-- Voiceanator prompt generation
-- Developer instructions appended
-- Duplicate document headings removed
-- Full ForgeBud compilation
+- Added `PromptExport`.
+- Added `ClipboardExportService`.
+- Compiled both new files successfully.
+- Built Voiceanator Engineering Context successfully.
+- Generated the Voiceanator prompt successfully.
+- Copied the generated prompt to the Windows clipboard.
+- Pasted the complete prompt into Notepad successfully.
 
 ---
 
-# Design Decisions
+# Required User Workflow
 
-The Prompt Builder was intentionally separated from AI-provider communication.
+The completed UI workflow must:
 
-Its responsibility is limited to constructing a reusable engineering prompt.
-
-Future releases will consume the generated `Prompt` rather than rebuilding project context.
-
-This keeps responsibilities clearly separated.
-
----
-
-# Known Issues
-
-None.
+1. Require an initialized project.
+2. Build the project’s `EngineeringContext`.
+3. Build a `Prompt`.
+4. Export the prompt to the clipboard.
+5. Display a success or failure message.
+6. Never modify the managed project.
 
 ---
 
-# Release State
+# Architectural Rules
 
-Implementation Complete
-
-Compilation Passed
-
-Runtime Validation Passed
-
-Documentation Synchronized
-
-Ready for Commit
-
-Ready for Push
+- Models contain state only.
+- `EngineeringContextService` constructs project knowledge.
+- `PromptBuilderService` constructs prompts.
+- `ClipboardExportService` performs clipboard export.
+- Controllers coordinate the complete workflow.
+- Widgets emit the user action.
+- MainWindow owns presentation.
+- Clipboard export must not read project files directly.
+- Clipboard export must not rebuild Engineering Context.
+- Clipboard export must not communicate with an AI provider.
 
 ---
 
-# Next Release
+# Validation
 
-Version:
+The completed release must verify:
 
-**v0.13.0**
+- `PromptExport` compiles.
+- `ClipboardExportService` compiles.
+- Clipboard export succeeds with a valid `Prompt`.
+- The copied text matches `Prompt.markdown`.
+- Voiceanator end-to-end export succeeds.
+- An uninitialized project cannot export a prompt.
+- Export failures are reported without crashing.
+- Existing project workflows remain functional.
+- Full ForgeBud compilation passes.
+- Application startup passes.
+- The user-facing copy action works.
 
-Name:
+---
 
-**Clipboard Export**
+# Current State
 
-Goal:
+Implementation is partially complete.
 
-Export an existing `Prompt` directly to the system clipboard.
+The model, service, and direct end-to-end clipboard test have passed.
 
-No implementation has started.
+Controller and UI integration have not started.
+
+---
+
+# Immediate Next Step
+
+Inspect the current controller, MainWindow, and widget conventions.
+
+Then update one complete integration file at a time.
