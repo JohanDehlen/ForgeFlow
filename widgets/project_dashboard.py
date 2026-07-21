@@ -3,7 +3,8 @@ ForgeBud
 
 Project dashboard widget.
 
-Displays the current project, repository, and release information.
+Displays the current project, repository, release, and project
+validation information.
 """
 
 from PySide6.QtWidgets import (
@@ -15,6 +16,7 @@ from PySide6.QtWidgets import (
 )
 
 from models.project_dashboard import ProjectDashboard
+from models.project_validation import ProjectValidation
 
 
 class ProjectDashboardWidget(QWidget):
@@ -35,6 +37,8 @@ class ProjectDashboardWidget(QWidget):
         self._create_repository_section(main_layout)
         self._add_separator(main_layout)
         self._create_release_section(main_layout)
+        self._add_separator(main_layout)
+        self._create_validation_section(main_layout)
 
         main_layout.addStretch()
 
@@ -53,6 +57,9 @@ class ProjectDashboardWidget(QWidget):
         self.descriptionLabel = QLabel("-")
         self.pathLabel = QLabel("-")
         self.initializationLabel = QLabel("-")
+
+        self.descriptionLabel.setWordWrap(True)
+        self.pathLabel.setWordWrap(True)
 
         form.addRow("Project", self.projectLabel)
         form.addRow("Description", self.descriptionLabel)
@@ -76,6 +83,8 @@ class ProjectDashboardWidget(QWidget):
         self.changedFilesLabel = QLabel("-")
         self.untrackedFilesLabel = QLabel("-")
 
+        self.lastCommitLabel.setWordWrap(True)
+
         form.addRow("Repository", self.repositoryLabel)
         form.addRow("Branch", self.branchLabel)
         form.addRow("Last Commit", self.lastCommitLabel)
@@ -94,10 +103,41 @@ class ProjectDashboardWidget(QWidget):
         form = QFormLayout()
 
         self.releaseVersionLabel = QLabel("-")
-        self.validationStatusLabel = QLabel("-")
+        self.releaseValidationLabel = QLabel("-")
 
         form.addRow("Release Version", self.releaseVersionLabel)
-        form.addRow("Validation", self.validationStatusLabel)
+        form.addRow(
+            "Release Validation",
+            self.releaseValidationLabel,
+        )
+
+        main_layout.addLayout(form)
+
+    def _create_validation_section(
+        self,
+        main_layout: QVBoxLayout,
+    ) -> None:
+        """
+        Create the project-health validation section.
+        """
+        form = QFormLayout()
+
+        self.projectHealthLabel = QLabel("-")
+        self.validationSummaryLabel = QLabel("-")
+        self.validationDetailsLabel = QLabel("-")
+
+        self.validationSummaryLabel.setWordWrap(True)
+        self.validationDetailsLabel.setWordWrap(True)
+
+        form.addRow("Project Health", self.projectHealthLabel)
+        form.addRow(
+            "Validation Summary",
+            self.validationSummaryLabel,
+        )
+        form.addRow(
+            "Validation Details",
+            self.validationDetailsLabel,
+        )
 
         main_layout.addLayout(form)
 
@@ -160,8 +200,13 @@ class ProjectDashboardWidget(QWidget):
         self.releaseVersionLabel.setText(
             release_manifest.version or "-"
         )
-        self.validationStatusLabel.setText(
+        self.releaseValidationLabel.setText(
             release_manifest.validation_status or "-"
+        )
+
+        self._set_project_validation(
+            dashboard.project_validation,
+            dashboard.is_initialized,
         )
 
     def clear(self) -> None:
@@ -180,4 +225,60 @@ class ProjectDashboardWidget(QWidget):
         self.untrackedFilesLabel.setText("-")
 
         self.releaseVersionLabel.setText("-")
-        self.validationStatusLabel.setText("-")
+        self.releaseValidationLabel.setText("-")
+
+        self.projectHealthLabel.setText("-")
+        self.validationSummaryLabel.setText("-")
+        self.validationDetailsLabel.setText("-")
+
+    def _set_project_validation(
+        self,
+        validation: ProjectValidation,
+        is_initialized: bool,
+    ) -> None:
+        """
+        Display project-health validation results.
+        """
+        if not is_initialized:
+            self.projectHealthLabel.setText("Not initialized")
+            self.validationSummaryLabel.setText(
+                "Project validation is unavailable until "
+                "ForgeBud initialization is complete."
+            )
+            self.validationDetailsLabel.setText("-")
+            return
+
+        error_count = len(validation.errors)
+        warning_count = len(validation.warnings)
+
+        if validation.is_valid and not validation.has_warnings:
+            self.projectHealthLabel.setText("Healthy")
+            self.validationSummaryLabel.setText(
+                "No project validation issues were found."
+            )
+            self.validationDetailsLabel.setText("-")
+            return
+
+        if validation.is_valid:
+            self.projectHealthLabel.setText(
+                "Healthy with warnings"
+            )
+        else:
+            self.projectHealthLabel.setText("Issues detected")
+
+        self.validationSummaryLabel.setText(
+            f"{error_count} error(s), "
+            f"{warning_count} warning(s)"
+        )
+
+        details = [
+            *(f"Error: {message}" for message in validation.errors),
+            *(
+                f"Warning: {message}"
+                for message in validation.warnings
+            ),
+        ]
+
+        self.validationDetailsLabel.setText(
+            "\n".join(details) if details else "-"
+        )

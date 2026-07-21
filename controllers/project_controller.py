@@ -20,6 +20,9 @@ from services.project_service import ProjectService
 from services.project_summary_service import (
     ProjectSummaryService,
 )
+from services.project_validation_service import (
+    ProjectValidationService,
+)
 from services.release_manifest_service import (
     ReleaseManifestService,
 )
@@ -193,8 +196,8 @@ class ProjectWindow(Protocol):
 class ProjectController:
     """
     Coordinates project selection, loading, initialization,
-    dashboard state, project-memory documents, and recent-project
-    presentation.
+    dashboard state, project validation, project-memory documents,
+    and recent-project presentation.
     """
 
     def __init__(self, window: ProjectWindow) -> None:
@@ -224,8 +227,8 @@ class ProjectController:
 
     def load_project(self, folder: str | Path) -> None:
         """
-        Load project, repository, dashboard, and project-memory
-        information.
+        Load project, repository, dashboard, validation, and
+        project-memory information.
         """
         project_path = Path(folder)
 
@@ -330,6 +333,7 @@ class ProjectController:
             return
 
         self.refresh_project_summary()
+        self.refresh_project_dashboard()
         self._window.show_status(
             "Project summary saved successfully."
         )
@@ -361,6 +365,7 @@ class ProjectController:
             return
 
         self.refresh_current_task()
+        self.refresh_project_dashboard()
         self._window.show_status(
             "Current task saved successfully."
         )
@@ -392,6 +397,7 @@ class ProjectController:
             return
 
         self.refresh_decisions()
+        self.refresh_project_dashboard()
         self._window.show_status(
             "Engineering decisions saved successfully."
         )
@@ -425,6 +431,7 @@ class ProjectController:
             return
 
         self.refresh_coding_standards()
+        self.refresh_project_dashboard()
         self._window.show_status(
             "Coding standards saved successfully."
         )
@@ -454,9 +461,12 @@ class ProjectController:
         project_info = ProjectInfo()
 
         if is_initialized:
-            project_info = ProjectService.load(
-                self._project_path
-            )
+            try:
+                project_info = ProjectService.load(
+                    self._project_path
+                )
+            except (TypeError, ValueError):
+                project_info = ProjectInfo()
 
         dashboard = ProjectDashboard(
             project_info=project_info,
@@ -465,6 +475,11 @@ class ProjectController:
             ),
             release_manifest=ReleaseManifestService.load(
                 self._project_path
+            ),
+            project_validation=(
+                ProjectValidationService.validate(
+                    self._project_path
+                )
             ),
             is_initialized=is_initialized,
         )
@@ -596,7 +611,15 @@ class ProjectController:
         """
         Load metadata for an initialized ForgeBud project.
         """
-        info = ProjectService.load(self._project_path)
+        try:
+            info = ProjectService.load(self._project_path)
+        except (TypeError, ValueError):
+            self._window.clear_project()
+            self._window.disable_initialize()
+            self._window.show_status(
+                "ForgeBud project metadata could not be loaded."
+            )
+            return
 
         self._window.set_project(info)
         self._window.disable_initialize()

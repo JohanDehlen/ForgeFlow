@@ -2,35 +2,52 @@
 
 ## Release
 
-Version: **v0.9.0**
+Version: **v0.10.0**
 
-Name: **Better Project Initialization**
+Name: **Project Validation**
 
-Status: **Ready for Commit**
+Status: **Released**
 
 ---
 
 # Goal
 
-Replace the one-click initialization workflow with a guided initialization dialog that collects project metadata before creating the ForgeBud project, while preserving the existing layered architecture and all current functionality.
+Introduce a read-only validation subsystem that verifies the integrity of ForgeBud-managed projects before development begins.
+
+---
+
+# Features Delivered
+
+- Project validation model
+- Project validation service
+- Dashboard validation integration
+- Controller validation integration
+- Read-only validation workflow
+- Required project-memory document validation
+- Project metadata validation
+- Invalid JSON detection
+- Blank required metadata detection
+- Optional metadata warnings
+- Project health reporting
 
 ---
 
 # Files Added
 
-- `widgets/project_initializer.py`
+- `models/project_validation.py`
+- `services/project_validation_service.py`
 
 ---
 
 # Files Modified
 
-- `services/project_service.py`
+- `models/project_dashboard.py`
 - `controllers/project_controller.py`
-- `main_window.py`
+- `widgets/project_dashboard.py`
 
 ---
 
-# Files Updated During Release Documentation
+# Documentation Updated
 
 - `.forgebud/PROJECT_STATE.md`
 - `.forgebud/current_task.md`
@@ -38,80 +55,54 @@ Replace the one-click initialization workflow with a guided initialization dialo
 
 ---
 
-# Files Removed
-
-None.
-
----
-
-# Validation
+# Validation Performed
 
 ## Compilation
 
-- Project Service compiled successfully.
-- Project Controller compiled successfully.
-- MainWindow compiled successfully.
-- Project Initializer dialog compiled successfully.
-- Full project compilation passed.
+Passed.
 
-## Runtime Validation
+## Runtime
 
-Verified successfully:
+Passed.
 
-- Application starts without exceptions.
-- Initialization dialog opens correctly.
-- Project metadata is pre-populated.
-- Description, language, framework, and version are editable.
-- Repository path is detected correctly.
-- Successful initialization creates `.forgebud`.
-- Project metadata is saved correctly.
-- Project reloads automatically after initialization.
-- Dashboard displays updated project metadata.
-- Project panel displays updated project metadata.
-- Project-memory documents are created correctly.
-- Existing project-memory documents remain protected.
+Verified:
 
-## Cancellation
+- Healthy project
+- Missing project-memory document
+- Invalid JSON metadata
+- Blank required metadata
+- Optional metadata warnings
+- Uninitialized project
+- Dashboard health reporting
 
-Verified successfully:
-
-- Cancel closes the dialog.
-- No `.forgebud` directory is created.
-- No project files are written.
-
-## Validation
-
-Verified successfully:
-
-- Blank project names rejected.
-- Whitespace-only project names rejected.
-- Blank versions rejected.
-- Whitespace-only versions rejected.
-- Invalid submissions create no project files.
+No crashes occurred.
 
 ---
 
-# Architectural Compliance
+# Architecture
 
 Verified.
 
-- Controllers coordinate workflows.
-- Services validate, normalize, and persist data.
-- Widgets collect and display presentation state.
-- Models contain state only.
-- MainWindow owns UI composition and dialog presentation.
+Validation is completely read-only.
+
+- Models store validation state.
+- Services perform validation.
+- Controllers coordinate validation.
+- Widgets display validation results.
+- MainWindow remains responsible for presentation.
 
 ---
 
-# Release Notes
+# Design Improvement
 
-This release significantly improves the ForgeBud initialization experience.
+During testing the validator was refined to distinguish between:
 
-Instead of immediately creating project files, ForgeBud now presents a dedicated initialization dialog where developers can review and complete project metadata before initialization begins.
+- Standard ForgeBud-managed projects
+- ForgeBud's own development repository
 
-Project metadata is validated and normalized before any filesystem changes occur. Initialization can be safely cancelled without creating a `.forgebud` directory, and invalid metadata is rejected before project files are written.
+Only documents created for every managed project are now treated as required.
 
-Successful initialization automatically reloads the project and refreshes the dashboard and all project-memory managers.
+This makes validation suitable for all ForgeBud projects, not only ForgeBud itself.
 
 ---
 
@@ -137,8 +128,12 @@ Ready for Push
 
 ---
 
-# Next Step
+# Next Release
 
-Commit the completed v0.9.0 release and push it to GitHub.
+After this release is committed and pushed:
 
-After the repository is synchronized, re-read every document in `.forgebud`, inspect the roadmap, determine the next incomplete milestone, and create the next release specification before implementation begins.
+1. Re-read every `.forgebud` document.
+2. Inspect the roadmap.
+3. Determine the next incomplete milestone.
+4. Create the next release specification.
+5. Begin implementation following the one-file workflow.
