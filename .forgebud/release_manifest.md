@@ -2,9 +2,9 @@
 
 ## Release
 
-Version: **v0.11.0**
+Version: **v0.12.0**
 
-Name: **Engineering Context Foundation**
+Name: **Prompt Builder Foundation**
 
 Status: **Completed**
 
@@ -12,50 +12,49 @@ Status: **Completed**
 
 # Goal
 
-Establish the provider-independent Engineering Context as the canonical representation of a software project's engineering state.
+Create the first provider-independent Prompt Builder.
 
-This release replaces AI-specific terminology with architecture that supports any current or future consumer.
+The Prompt Builder transforms an Engineering Context into a deterministic development prompt that can be consumed by any AI provider or other engineering tool.
+
+This release intentionally performs no AI communication.
 
 ---
 
 # Features Delivered
 
-- EngineeringContext model
-- EngineeringContextService
-- EngineeringContextSerializer
-- Provider-independent engineering terminology
-- Repository-state integration
-- Project-memory aggregation
-- Deterministic Markdown serialization
-- Compatibility aliases for previous AIContext names
-- End-to-end Engineering Context generation
+- Prompt model
+- PromptBuilderService
+- Engineering Context integration
+- Deterministic prompt generation
+- Standard developer instructions
+- Duplicate heading normalization
+- End-to-end prompt generation
+- Runtime validation
 
 ---
 
 # Files Added
 
-- `models/engineering_context.py`
-- `services/engineering_context_service.py`
-- `services/engineering_context_serializer.py`
+- `models/prompt.py`
+- `services/prompt_builder_service.py`
 
 ---
 
 # Files Modified
 
-- `models/ai_context.py`
-- `services/context_serializer_service.py`
+- `services/engineering_context_serializer.py`
 
 ---
 
 # Files Removed
 
-- `services/context_generation_service.py`
+None.
 
 ---
 
 # Architecture
 
-ForgeBud now uses the following knowledge pipeline:
+The engineering pipeline is now:
 
 ```
 Repository
@@ -66,15 +65,23 @@ Project Memory
       ▼
 Engineering Context
       │
-      ├── AI Providers
-      ├── Documentation
-      ├── Reports
-      ├── Search
-      ├── Automation
-      └── Future Consumers
+      ▼
+Prompt Builder
+      │
+      ▼
+Prompt
+      │
+      ▼
+Consumers
 ```
 
-The Engineering Context is now the single provider-independent representation of project knowledge.
+The Prompt Builder consumes only an `EngineeringContext`.
+
+It never reads project files directly.
+
+It performs no filesystem modification.
+
+It communicates with no AI provider.
 
 ---
 
@@ -90,50 +97,26 @@ Passed.
 
 Verified:
 
-- EngineeringContext construction
-- EngineeringContext serialization
-- Repository metadata
-- Project Summary
-- Current Task
-- Coding Standards
-- Engineering Decisions
-- Release Manifest
-- Project Validation
-- Voiceanator end-to-end context generation
-- Repository-wide deprecated-name search
+- Prompt model creation
+- PromptBuilderService
+- Engineering Context integration
+- Deterministic prompt generation
+- Voiceanator prompt generation
+- Developer instructions appended
+- Duplicate document headings removed
 - Full ForgeBud compilation
-
----
-
-# Compatibility
-
-Temporary compatibility modules remain:
-
-- `models/ai_context.py`
-- `services/context_serializer_service.py`
-
-These preserve backwards compatibility while the project transitions to Engineering Context terminology.
-
-They may be removed during a future cleanup release.
 
 ---
 
 # Design Decisions
 
-During implementation the project architecture evolved.
+The Prompt Builder was intentionally separated from AI-provider communication.
 
-The former concept of an **AI Context** was generalized into an **Engineering Context**.
+Its responsibility is limited to constructing a reusable engineering prompt.
 
-This better reflects the long-term architecture because the same project knowledge can be consumed by:
+Future releases will consume the generated `Prompt` rather than rebuilding project context.
 
-- AI providers
-- Documentation
-- Analytics
-- Search
-- Reporting
-- Automation
-
-without changing the Engineering Context itself.
+This keeps responsibilities clearly separated.
 
 ---
 
@@ -161,12 +144,16 @@ Ready for Push
 
 # Next Release
 
-Following repository synchronization:
+Version:
 
-1. Re-read every `.forgebud` document.
-2. Inspect the roadmap.
-3. Select the next Milestone 3 objective.
-4. Produce the next release specification.
-5. Continue the one-file workflow.
+**v0.13.0**
 
-The Engineering Context foundation is complete.
+Name:
+
+**Clipboard Export**
+
+Goal:
+
+Export an existing `Prompt` directly to the system clipboard.
+
+No implementation has started.

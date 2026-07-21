@@ -28,6 +28,7 @@ class EngineeringContextSerializer:
         sections: list[str] = []
 
         cls._append_project_information(sections, context)
+
         cls._append_markdown_section(
             sections,
             "Project Summary",
@@ -48,6 +49,7 @@ class EngineeringContextSerializer:
             "Engineering Decisions",
             context.decisions.markdown,
         )
+
         cls._append_release_manifest(sections, context)
         cls._append_repository_context(sections, context)
         cls._append_project_validation(sections, context)
@@ -77,23 +79,51 @@ class EngineeringContextSerializer:
             ]
         )
 
-    @staticmethod
+    @classmethod
     def _append_markdown_section(
+        cls,
         sections: list[str],
         title: str,
         markdown: str,
     ) -> None:
         """
-        Append a stored Markdown document.
+        Append a stored Markdown document without duplicating its
+        leading document title.
         """
+        normalized_markdown = cls._remove_leading_heading(
+            markdown
+        )
+
         sections.extend(
             [
                 "",
                 f"# {title}",
                 "",
-                markdown.strip(),
+                normalized_markdown or "No information recorded.",
             ]
         )
+
+    @staticmethod
+    def _remove_leading_heading(markdown: str) -> str:
+        """
+        Remove one leading level-one Markdown heading.
+
+        Project-memory documents normally contain their own document
+        title. The serializer supplies canonical section headings, so
+        the stored leading heading is omitted from generated context.
+        """
+        lines = markdown.strip().splitlines()
+
+        while lines and not lines[0].strip():
+            lines.pop(0)
+
+        if lines and lines[0].strip().startswith("# "):
+            lines.pop(0)
+
+        while lines and not lines[0].strip():
+            lines.pop(0)
+
+        return "\n".join(lines).strip()
 
     @staticmethod
     def _append_release_manifest(
@@ -110,9 +140,12 @@ class EngineeringContextSerializer:
                 "",
                 "# Release Manifest",
                 "",
-                f"Version: {manifest.version}",
-                f"Goal: {manifest.goal}",
-                f"Validation Status: {manifest.validation_status}",
+                f"Version: {manifest.version or '-'}",
+                f"Goal: {manifest.goal or '-'}",
+                (
+                    "Validation Status: "
+                    f"{manifest.validation_status or '-'}"
+                ),
             ]
         )
 
@@ -174,10 +207,16 @@ class EngineeringContextSerializer:
                 "",
                 "# Repository",
                 "",
-                f"Path: {project_context.project_path}",
-                f"Git Repository: {project_context.is_repository}",
-                f"Branch: {project_context.branch}",
-                f"Last Commit: {project_context.last_commit}",
+                f"Path: {project_context.project_path or '-'}",
+                (
+                    "Git Repository: "
+                    f"{project_context.is_repository}"
+                ),
+                f"Branch: {project_context.branch or '-'}",
+                (
+                    "Last Commit: "
+                    f"{project_context.last_commit or '-'}"
+                ),
                 (
                     "Modified Files: "
                     f"{project_context.modified_count}"

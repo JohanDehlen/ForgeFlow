@@ -2,88 +2,51 @@
 
 ## Current Version
 
-**v0.11.0**
+**v0.12.0**
 
-Status: **Engineering Context Foundation Complete — Awaiting Commit**
+Status: **Released**
 
-Repository Status: **Local Release Complete; Push Pending**
+Repository Status: **Committed and Pushed**
 
 ---
 
 # Completed Releases
 
-## v0.1.0 — Project Initialization
+- v0.1.0 — Project Initialization
+- v0.2.0 — Git Integration
+- v0.3.0 — Project Dashboard
+- v0.4.0 — Release Manifest
+- v0.5.0 — Current Task
+- v0.6.0 — Engineering Decisions
+- v0.7.0 — Coding Standards
+- v0.8.0 — Project Summary
+- v0.9.0 — Better Project Initialization
+- v0.10.0 — Project Validation
+- v0.11.0 — Engineering Context Foundation
+- v0.12.0 — Prompt Builder Foundation
 
-Completed.
+---
 
-## v0.2.0 — Git Integration
+# v0.12.0 Summary
 
-Completed.
-
-## v0.3.0 — Project Dashboard
-
-Completed.
-
-## v0.4.0 — Release Manifest
-
-Completed.
-
-## v0.5.0 — Current Task
-
-Completed.
-
-## v0.6.0 — Engineering Decisions
-
-Completed.
-
-## v0.7.0 — Coding Standards
-
-Completed.
-
-## v0.8.0 — Project Summary
-
-Completed.
-
-## v0.9.0 — Better Project Initialization
-
-Completed.
-
-## v0.10.0 — Project Validation
-
-Completed.
-
-## v0.11.0 — Engineering Context Foundation
-
-Implementation complete.
+Completed successfully.
 
 Features delivered:
 
-- Provider-independent `EngineeringContext` model
-- Engineering Context construction service
-- Deterministic Markdown serializer
-- Project metadata inclusion
-- Repository-state inclusion
-- Project Summary inclusion
-- Current Task inclusion
-- Coding Standards inclusion
-- Engineering Decisions inclusion
-- Release Manifest inclusion
-- Project Validation inclusion
-- Temporary compatibility aliases for former AI-specific names
+- Prompt model
+- PromptBuilderService
+- Deterministic prompt generation
+- EngineeringContext integration
+- End-to-end prompt generation
+- Duplicate heading removal
+- Full compilation
+- Runtime validation
 
 ---
 
 # Current Architecture
 
-ForgeBud follows a layered architecture:
-
-- Models contain state only.
-- Services perform work.
-- Controllers coordinate workflows.
-- Widgets display data and emit user actions.
-- MainWindow owns UI composition and presentation.
-
-ForgeBud’s project-knowledge flow is now:
+ForgeBud now consists of five primary layers:
 
 Repository
 
@@ -97,125 +60,71 @@ Engineering Context
 
 ↓
 
+Prompt Builder
+
+↓
+
 Consumers
 
-Potential consumers include:
+Current consumers:
 
-- AI prompt generation
+- Prompt generation
+
+Future consumers:
+
+- Clipboard export
 - AI providers
 - Documentation
 - Reports
 - Search
-- Analytics
 - Automation
 
-The repository remains the source of truth.
+---
 
-The Engineering Context is a read-only representation derived from repository and project-memory state.
+# Validation
+
+Confirmed:
+
+- Prompt model compiles.
+- PromptBuilderService compiles.
+- Engineering Context serialization succeeds.
+- Prompt generation succeeds.
+- Voiceanator prompt generation succeeds.
+- Duplicate headings removed.
+- Full ForgeBud compilation passes.
 
 ---
 
-# Engineering Context
+# Current Roadmap Position
 
-The canonical Engineering Context currently contains:
+Milestone:
 
-- Project metadata
-- Repository context
-- Project Summary
-- Current Task
-- Coding Standards
-- Engineering Decisions
-- Release Manifest
-- Project Validation
+**Milestone 3 — AI Context Engine**
 
-The context is provider-independent.
+Completed objectives:
 
-It does not communicate with ChatGPT, Claude, Gemini, or any other AI provider.
+- Engineering Context
+- Prompt Builder
 
----
+Remaining objectives:
 
-# Compatibility State
-
-Temporary compatibility modules remain:
-
-- `models/ai_context.py`
-- `services/context_serializer_service.py`
-
-These preserve the former names:
-
-- `AIContext`
-- `ContextSerializerService`
-
-No production files depend on the deprecated names.
-
-The obsolete file below has been removed:
-
-- `services/context_generation_service.py`
-
-Compatibility modules may be removed in a future dedicated cleanup release.
+- Clipboard export
+- Token estimation
 
 ---
 
-# Validation Summary
+# Next Release
 
-Confirmed successfully:
+Version:
 
-- `EngineeringContext` model compiles.
-- Engineering Context service compiles.
-- Engineering Context serializer compiles.
-- Compatibility modules compile.
-- Repository-wide search found no production references to deprecated names.
-- Voiceanator Engineering Context builds successfully.
-- Engineering Context serializes successfully to Markdown.
-- Project metadata appears correctly.
-- Project Summary appears correctly.
-- Current Task appears correctly.
-- Coding Standards appear correctly.
-- Engineering Decisions appear correctly.
-- Release Manifest state appears correctly.
-- Repository state appears correctly.
-- Project Validation state appears correctly.
-- Full ForgeBud compilation passed.
+**v0.13.0**
 
----
+Name:
 
-# Current Release Status
+**Clipboard Export**
 
-Release: **v0.11.0 — Engineering Context Foundation**
+Status:
 
-State:
+Planning
 
-- Specification complete.
-- Implementation complete.
-- Refactoring complete.
-- End-to-end validation passed.
-- Full compilation passed.
-- Documentation synchronization in progress.
-- Commit pending.
-- Push pending.
-
----
-
-# Remaining Release Work
-
-1. Update `.forgebud/current_task.md`.
-2. Update `.forgebud/release_manifest.md`.
-3. Update `.forgebud/ARCHITECTURE.md` to document the Engineering Context layer.
-4. Review the working tree.
-5. Commit v0.11.0.
-6. Push the release to GitHub.
-
----
-
-# Next Planned Work
-
-After v0.11.0 is committed and pushed:
-
-1. Re-read every document in `.forgebud`.
-2. Inspect the current roadmap milestone.
-3. Define the next focused Engineering Context release.
-4. Create a complete release specification.
-5. Inspect every implementation dependency.
-6. Continue one complete file at a time.
-
-No next implementation release has started.
+No implementation has started.

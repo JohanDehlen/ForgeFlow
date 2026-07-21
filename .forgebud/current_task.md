@@ -2,102 +2,118 @@
 
 ## Active Release
 
-**v0.11.0 — Engineering Context Foundation**
+None
+
+The previous release has been completed, validated, committed, and pushed.
+
+---
+
+# Current State
+
+ForgeBud is synchronized.
+
+There is no active implementation in progress.
+
+The repository is ready for the next release.
+
+---
+
+# Last Completed Release
+
+## v0.12.0 — Prompt Builder Foundation
+
+Completed successfully.
+
+Features delivered:
+
+- Prompt model
+- PromptBuilderService
+- Provider-independent prompt generation
+- EngineeringContext integration
+- Deterministic prompt generation
+- Duplicate heading removal
+- Runtime validation
+- Full compilation
+
+---
+
+# Current Architecture
+
+ForgeBud now follows this engineering pipeline:
+
+```
+Repository
+      │
+      ▼
+Project Memory
+      │
+      ▼
+Engineering Context
+      │
+      ▼
+Prompt Builder
+      │
+      ▼
+Consumers
+```
+
+Current consumer:
+
+- Prompt generation
+
+Future consumers:
+
+- Clipboard export
+- Token estimation
+- AI providers
+- Documentation
+- Reports
+- Search
+- Automation
+
+---
+
+# Next Planned Release
+
+## v0.13.0 — Clipboard Export
 
 Status:
 
-Documentation Synchronization
+Planning
+
+Goal:
+
+Allow the generated prompt to be exported directly to the system clipboard.
+
+The Clipboard Export feature will consume a generated `Prompt`.
+
+It will not regenerate Engineering Context.
+
+It will not rebuild prompts.
+
+Its sole responsibility is exporting an existing prompt to the clipboard.
 
 ---
 
-# Current Objective
+# Planned Workflow
 
-Complete the Engineering Context Foundation release.
+Before implementation:
 
-Implementation is complete.
-
-The repository is currently being synchronized before commit and push.
-
----
-
-# Completed During This Release
-
-- Introduced the provider-independent `EngineeringContext` model.
-- Added `EngineeringContextService`.
-- Added `EngineeringContextSerializer`.
-- Refactored architecture away from AI-specific terminology.
-- Preserved deterministic Markdown serialization.
-- Preserved repository-state integration.
-- Preserved project-memory integration.
-- Preserved project validation integration.
-- Added temporary compatibility aliases.
-- Removed the obsolete `ContextGenerationService`.
-- Successfully generated Engineering Context from Voiceanator.
-- Successfully serialized Engineering Context into Markdown.
-- Passed full project compilation.
+1. Inspect the repository.
+2. Re-read all `.forgebud` documents.
+3. Create the release specification.
+4. Inspect implementation dependencies.
+5. Generate one complete file at a time.
+6. Compile after every file.
+7. Validate end-to-end.
+8. Synchronize documentation.
+9. Commit.
+10. Push.
 
 ---
 
-# Validation Completed
+# Immediate Next Action
 
-Verified:
+Begin planning Release v0.13.0.
 
-- Engineering Context model
-- Engineering Context service
-- Engineering Context serializer
-- Compatibility aliases
-- Repository-wide deprecated-name search
-- Voiceanator context generation
-- Markdown serialization
-- Full ForgeBud compilation
-
-No runtime failures occurred.
-
----
-
-# Remaining Tasks
-
-1. Update `.forgebud/release_manifest.md`.
-2. Update `.forgebud/ARCHITECTURE.md` with the Engineering Context layer.
-3. Review all local changes.
-4. Commit the release.
-5. Push to GitHub.
-
----
-
-# Architecture
-
-ForgeBud now separates concerns into five layers:
-
-1. Repository
-2. Project Memory
-3. Engineering Context
-4. Consumers
-5. Presentation
-
-The Engineering Context is the canonical provider-independent representation of project knowledge.
-
-Future AI providers, documentation generators, automation, reporting, and analytics will consume this context rather than reading project files directly.
-
----
-
-# Next Release
-
-After this release is synchronized:
-
-1. Re-read every `.forgebud` document.
-2. Inspect the roadmap.
-3. Select the next incomplete milestone objective.
-4. Produce a release specification.
-5. Inspect implementation dependencies.
-6. Continue the one-file workflow.
-
-No new implementation work has started.
-
----
-
-# Notes
-
-The terminology refactoring from **AI Context** to **Engineering Context** establishes a provider-independent architecture before AI-provider integration begins.
-
-This provides a stable foundation for the remainder of Milestone 3.
+No implementation has started.
